@@ -57,6 +57,7 @@ export default defineComponent({
           name: userObject.data.data.name,
           email:  userData.data.data.email,
           roles:  userObject.data.data.roles,
+          webflow_vendor_id: userObject.data.data.webflow_vendor_id,
           token:  userData.data.data.idToken,
           refreshToken:  userData.data.data.refreshToken,
         });

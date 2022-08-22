@@ -60,9 +60,28 @@ export default defineComponent({
           password: this.password
         });
 
+        const roles = await client.get(`/auth/accounts/roles`, {
+          headers: {
+            "deskree-admin": process.env.VUE_APP_DESKREE_ADMIN_TOKEN
+          }
+        });
+
+        const vendorRole = roles.data.data.find(role => role.name === "vendor");
+
+        // Update user object in the database
+        const vendor = await client.post(`/integrations/webflow/collections/${process.env.VUE_APP_WEBFLOW_VENDORS_COLLECTION_ID}/items`, {
+          fields: {
+            name: this.fullName,
+            _archived: false,
+            _draft: false,
+          }
+        });
+
         // Update user object in the database
         const userObject = await client.patch(`/rest/collections/users/${userData.data.data.uid}`, {
-          name: this.fullName
+          name: this.fullName,
+          webflow_vendor_id: vendor.data._id,
+          roles: [vendorRole.uid]
         });
 
 
@@ -70,6 +89,7 @@ export default defineComponent({
           uid: userData.data.data.uid,
           name: userObject.data.data.name,
           email:  userData.data.data.email,
+          webflow_vendor_id: vendor.data._id,
           roles:  userObject.data.data.roles,
           token:  userData.data.data.idToken,
           refreshToken:  userData.data.data.refreshToken,
