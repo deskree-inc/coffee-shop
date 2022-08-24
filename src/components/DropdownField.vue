@@ -1,15 +1,17 @@
 <template>
-  <div class="input-wrapper">
-    <label>{{name}}</label>
-    <input :placeholder="placeholder" :type="type" @input="$emit('update:modelValue', $event.target.value)" v-model="input" :name="name">
+  <div class="dropdown-wrapper">
+    <label :for="name">{{name}}</label>
+    <select :name="name" :id="name" v-model="input" @change="$emit('update:modelValue', $event.target.value)">
+      <option :value="option.value" v-for="option in options" :key="option.value">{{ option.name }}</option>
+    </select>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import {defineComponent, ref} from 'vue';
 
 export default defineComponent({
-  name: "InputField",
+  name: "DropdownField",
   setup() {
     const input = ref("");
     return { input };
@@ -19,20 +21,16 @@ export default defineComponent({
       type: String,
       required: true
     },
-    placeholder: {
-      type: String,
-      required: false
-    },
-    type: {
-      type: String,
-      default: "text"
+    options:{
+      type: Array,
+      required: true
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
-.input-wrapper {
+.dropdown-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -48,8 +46,8 @@ export default defineComponent({
     letter-spacing: 2px;
     text-transform: uppercase;
   }
-  input {
-    width: calc(100% - 36px);
+  select {
+    width: calc(100% + 16px);
     display: block;
     margin-bottom: 20px;
     padding: 18px 24px;
