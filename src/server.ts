@@ -7,12 +7,10 @@ export const client = axios.create({
 
 client.interceptors.request.use(async (config) => {
     const user = await store.getters["user"];
-    if (user) {
-        config.headers = {
-            Authorization: `Bearer ${user.token}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        };
+    if (Object.prototype.hasOwnProperty.call(user, "token")) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        config.headers["Authorization"] = `Bearer ${user.token}`;
     }
     return config;
 });
